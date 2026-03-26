@@ -1,8 +1,9 @@
 {
   "expo": {
     "name": "KharchaShare",
-    "slug": "KharchaShare",
+    "slug": "kharchashare",
     "version": "1.0.0",
+    "scheme": "kharchashare",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -13,7 +14,10 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSContactsUsageDescription": "KharchaShare reads your contacts so you can quickly add group members by name."
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -21,10 +25,15 @@
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "permissions": ["android.permission.READ_CONTACTS"]
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "plugins": [
+      "expo-router",
+      "expo-contacts"
+    ]
   }
 }
