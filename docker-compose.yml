@@ -1,0 +1,48 @@
+services:
+
+  # ── KharchaShare API ─────────────────────────────────────────────────────
+  api:
+    build: ./backend
+    ports:
+      - "127.0.0.1:8000:8000"
+    environment:
+      - OLLAMA_HOST=http://ollama:11434
+      - OLLAMA_MODEL=${OLLAMA_MODEL:-qwen2.5:7b}
+    depends_on:
+      - ollama
+    restart: unless-stopped
+    volumes:
+      - ./backend:/app          # live-sync source — no rebuild needed for code changes
+    command: >
+      uvicorn main:app
+      --host 0.0.0.0
+      --port 8000
+      --reload
+
+  # ── Ollama (local LLM runtime) ───────────────────────────────────────────
+  #
+  # Hosts qwen2.5:7b — a fast, instruction-tuned model that reliably returns
+  # structured JSON. Models are stored in a named volume so they survive
+  # container restarts (no re-download on every `docker compose up`).
+  #
+  # CPU-only by default. To enable NVIDIA GPU acceleration uncomment the
+  # `deploy` block below and ensure nvidia-container-toolkit is installed.
+  ollama:
+    image: ollama/ollama:latest
+    ports:
+      - "11434:11434"       # expose so you can also use Ollama directly
+    volumes:
+      - ollama_models:/root/.ollama
+    restart: unless-stopped
+    # -- NVIDIA GPU (optional) --
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           count: all
+    #           capabilities: [gpu]
+
+volumes:
+  # Persists downloaded model weights between restarts (~4.7 GB for qwen2.5:7b)
+  ollama_models:
