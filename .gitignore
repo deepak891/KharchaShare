@@ -45,3 +45,9 @@ backend/*.db-wal
 # generated native folders
 /ios
 /android
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
